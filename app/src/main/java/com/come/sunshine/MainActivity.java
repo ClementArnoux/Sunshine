@@ -1,7 +1,11 @@
 package com.come.sunshine;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -34,53 +38,23 @@ public class MainActivity extends AppCompatActivity {
 
 		//noinspection SimplifiableIfStatement
 		if (id == R.id.action_settings) {
+			startActivity(new Intent(this, SettingsActivity.class));
 			return true;
 		}
 
 		return super.onOptionsItemSelected(item);
 	}
+
+	private void openPreferredLocationInMap() {
+		SharedPreferences sharedPrefs =
+				PreferenceManager.getDefaultSharedPreferences(this);
+		String location = sharedPrefs.getString(
+				getString(R.string.pref_location_key),
+				getString(R.string.pref_location_default));
+
+		Uri geoLocation = Uri.parse("geo.0.0?").buildUpon()
+				.appendQueryParameter("q", location).build();
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setData(geoLocation);
+	}
 }
-
-/*
-save main activity:
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:id="@+id/fragment"
-          android:name="com.come.sunshine.ForecastFragment"
-          tools:layout="@layout/fragment_main"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent" />
-
-fragment main:
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                tools:context=".MainActivityFragment"
-                tools:showIn="@layout/activity_main">
-
-	<ListView
-		android:id="@+id/listview_forecast"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"/>
-
-
-
-</RelativeLayout>
-
-save list_item
-<?xml version="1.0" encoding="utf-8"?>
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minHeight="?android:attr/listPreferredItemHeight"
-          android:gravity="bottom|center"
-          android:id="@+id/list_item_forecast_textview" />
-
- */
-
